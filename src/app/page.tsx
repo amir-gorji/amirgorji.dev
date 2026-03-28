@@ -1,10 +1,12 @@
-// import { BlogCard } from '@/components/BlogCard';
+import { BlogCard } from '@/components/BlogCard';
 import { SocialLinks } from '@/components/SocialLinks';
-// import { getAllPosts } from '@/lib/posts';
+import { getAllPosts } from '@/lib/posts';
 import Image from 'next/image';
 
+const SHOW_POSTS = false;
+
 export default async function Home() {
-  // const posts = await getAllPosts();
+  const posts = SHOW_POSTS ? await getAllPosts() : [];
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -59,22 +61,25 @@ export default async function Home() {
         <h2 className='text-2xl font-bold text-foreground mb-6'>
           Latest Posts
         </h2>
-        <p className='text-muted'>Coming soon.</p>
-        {/* {posts.length > 0 ? (
-          <div className='grid gap-4'>
-            {posts.map((post) => (
-              <BlogCard
-                key={post.slug}
-                slug={post.slug}
-                title={post.title}
-                date={post.date}
-                excerpt={post.excerpt}
-              />
-            ))}
-          </div>
+        {SHOW_POSTS ? (
+          posts.length > 0 ? (
+            <div className='grid gap-4'>
+              {posts.map((post) => (
+                <BlogCard
+                  key={post.slug}
+                  slug={post.slug}
+                  title={post.title}
+                  date={post.date}
+                  excerpt={post.excerpt}
+                />
+              ))}
+            </div>
+          ) : (
+            <p className='text-muted'>No posts yet. Check back soon!</p>
+          )
         ) : (
-          <p className='text-muted'>No posts yet. Check back soon!</p>
-        )} */}
+          <p className='text-muted'>Coming soon.</p>
+        )}
       </section>
     </div>
   );
