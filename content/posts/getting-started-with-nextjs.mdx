@@ -1,0 +1,48 @@
+---
+title: "Getting Started with Next.js App Router"
+date: "2026-03-27"
+excerpt: "A quick overview of the Next.js App Router and why it's a great choice for modern web applications."
+---
+
+Next.js has become one of the most popular frameworks for building React applications, and the App Router introduced in Next.js 13 brings some powerful new patterns.
+
+## Server Components by Default
+
+One of the biggest changes is that components are **server components by default**. This means they render on the server and send HTML to the client, resulting in:
+
+- Smaller JavaScript bundles
+- Better initial load performance
+- Direct access to backend resources
+
+```tsx
+// This runs on the server by default
+export default async function Page() {
+  const data = await fetchData();
+  return <div>{data.title}</div>;
+}
+```
+
+## When to Use Client Components
+
+Add the `"use client"` directive when you need:
+
+- **Interactivity** — onClick, onChange, etc.
+- **Browser APIs** — localStorage, window, etc.
+- **State and effects** — useState, useEffect, etc.
+
+```tsx
+"use client";
+
+import { useState } from "react";
+
+export function Counter() {
+  const [count, setCount] = useState(0);
+  return <button onClick={() => setCount(count + 1)}>Count: {count}</button>;
+}
+```
+
+## Layouts and Nested Routing
+
+The App Router uses a file-system based router where folders define routes. Layouts wrap pages and persist across navigations, avoiding unnecessary re-renders.
+
+This architecture makes it easy to build complex applications with shared navigation, loading states, and error boundaries — all defined at the file system level.
