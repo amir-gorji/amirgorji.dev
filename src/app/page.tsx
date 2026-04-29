@@ -46,9 +46,27 @@ export default async function Home() {
             Hi, I&apos;m Amir Gorji
           </h1>
           <p className='mt-3 text-lg text-muted max-w-lg'>
-            Software engineer passionate about building great products. Welcome
-            to my corner of the internet where I share my thoughts and
-            experiences.
+            Frontend & mobile-leaning fullstack engineer with strong TypeScript
+            opinions. Lately exploring algorithmic approaches to fix LLM blind
+            spots. Building{' '}
+            <a
+              href='https://dismatch.dev'
+              target='_blank'
+              rel='noopener noreferrer'
+              className='accent hover:underline'
+            >
+              dismatch.dev
+            </a>{' '}
+            and{' '}
+            <a
+              href='https://github.com/amir-gorji/mcpose'
+              target='_blank'
+              rel='noopener noreferrer'
+              className='accent hover:underline'
+            >
+              mcpose
+            </a>
+            .
           </p>
           <div className='mt-4'>
             <SocialLinks />

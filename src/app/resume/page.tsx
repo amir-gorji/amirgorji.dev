@@ -1,135 +1,145 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { resume } from "./data";
 
 export const metadata: Metadata = {
   title: "Resume — Amir Gorji",
-  description: "Professional resume of Amir Gorji",
+  description: `${resume.header.title} — ${resume.header.location}. ${resume.experience.length} years of mobile and web platform engineering across fintech, e-commerce, and healthcare.`,
 };
 
-const SHOW_RESUME = false;
-
-const SKILLS = [
-  "TypeScript",
-  "JavaScript",
-  "React",
-  "Next.js",
-  "Node.js",
-  "Python",
-  "SQL",
-  "Git",
-  "Docker",
-  "AWS",
-  "REST APIs",
-  "GraphQL",
-];
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: resume.header.name,
+  jobTitle: resume.header.title,
+  url: "https://amirgorji.dev",
+  email: `mailto:${resume.header.email}`,
+  sameAs: [resume.header.github, resume.header.linkedin],
+};
 
 export default function ResumePage() {
-  if (!SHOW_RESUME) {
-    return (
-      <div className="py-12">
-        <h1 className="text-4xl font-bold text-foreground">Resume</h1>
-        <p className="mt-4 text-muted">Coming soon.</p>
-      </div>
-    );
-  }
-
   return (
     <div className="py-12 space-y-12">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+      />
+
       <header className="space-y-4">
         <div>
-          <h1 className="text-4xl font-bold text-foreground">Amir Gorji</h1>
-          <p className="mt-2 text-lg text-muted">Software Engineer</p>
+          <h1 className="text-4xl font-bold text-foreground">
+            {resume.header.name}
+          </h1>
+          <p className="mt-2 text-lg text-muted">{resume.header.title}</p>
+          <p className="mt-1 text-sm text-muted">{resume.header.location}</p>
         </div>
         <div className="flex flex-wrap gap-4 text-sm text-muted">
           <a
-            href="mailto:amir@example.com"
+            href={`mailto:${resume.header.email}`}
             className="text-accent hover:text-accent-hover transition-colors"
           >
-            amir@example.com
+            {resume.header.email}
           </a>
           <a
-            href="https://github.com/amirgorji"
+            href={resume.header.github}
             target="_blank"
             rel="noopener noreferrer"
             className="text-accent hover:text-accent-hover transition-colors"
           >
-            github.com/amirgorji
+            GitHub
           </a>
           <a
-            href="https://linkedin.com/in/amirgorji"
+            href={resume.header.linkedin}
             target="_blank"
             rel="noopener noreferrer"
             className="text-accent hover:text-accent-hover transition-colors"
           >
-            linkedin.com/in/amirgorji
+            LinkedIn
           </a>
         </div>
       </header>
 
       <Section title="Summary">
-        <p className="text-muted leading-relaxed">
-          Passionate software engineer with experience in building scalable web
-          applications and services. Focused on delivering clean, maintainable
-          code and great user experiences.
-        </p>
+        <p className="text-muted leading-relaxed">{resume.summary}</p>
       </Section>
 
       <Section title="Experience">
-        <TimelineItem
-          title="Senior Software Engineer"
-          organization="Company Name"
-          period="2024 — Present"
-          items={[
-            "Led development of key product features serving thousands of users",
-            "Designed and implemented scalable microservices architecture",
-            "Mentored junior engineers and conducted code reviews",
-          ]}
-        />
-        <TimelineItem
-          title="Software Engineer"
-          organization="Previous Company"
-          period="2022 — 2024"
-          items={[
-            "Built and maintained full-stack web applications using React and Node.js",
-            "Improved application performance by optimizing database queries",
-            "Collaborated with cross-functional teams to deliver features on schedule",
-          ]}
-        />
+        {resume.experience.map((entry) => (
+          <TimelineItem
+            key={`${entry.company}-${entry.period}`}
+            title={entry.title}
+            organization={entry.company}
+            organizationUrl={entry.companyUrl}
+            period={entry.period}
+            location={entry.location}
+            blurb={entry.blurb}
+            items={entry.bullets}
+          />
+        ))}
       </Section>
 
-      <Section title="Education">
-        <TimelineItem
-          title="Bachelor of Science in Computer Science"
-          organization="University Name"
-          period="2018 — 2022"
-          items={[]}
-        />
+      <Section title="Open Source">
+        {resume.openSource.map((entry) => (
+          <ProjectItem
+            key={entry.name}
+            title={entry.name}
+            description={entry.description}
+            link={entry.url}
+          />
+        ))}
       </Section>
 
       <Section title="Skills">
-        <div className="flex flex-wrap gap-2">
-          {SKILLS.map((skill) => (
-            <span
-              key={skill}
-              className="rounded-full border border-card-border bg-card-bg px-3 py-1 text-sm text-foreground"
-            >
-              {skill}
-            </span>
+        <dl className="grid gap-x-6 gap-y-4 sm:grid-cols-2">
+          {resume.skills.map((group) => (
+            <div key={group.category} className="space-y-1">
+              <dt className="text-sm font-semibold text-foreground">
+                {group.category}
+              </dt>
+              <dd className="text-sm text-muted leading-relaxed">
+                {group.items}
+              </dd>
+            </div>
           ))}
-        </div>
+        </dl>
       </Section>
 
-      <Section title="Projects">
-        <ProjectItem
-          title="Personal Website"
-          description="This website — built with Next.js, Tailwind CSS, and MDX. Features a blog, resume, and dark mode support."
-          link="https://amirgorji.dev"
-        />
-        <ProjectItem
-          title="Project Name"
-          description="Brief description of an interesting project you've worked on, the technologies used, and the impact it had."
-          link="https://github.com/amirgorji/project"
-        />
+      <Section title="Education">
+        {resume.education.map((entry) => (
+          <article
+            key={`${entry.institution}-${entry.period}`}
+            className="rounded-2xl border border-card-border bg-card-bg p-5"
+          >
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <h3 className="text-lg font-semibold text-foreground">
+                  {entry.institution}
+                </h3>
+                <p className="text-sm text-muted">{entry.degree}</p>
+                <p className="text-sm text-muted">{entry.location}</p>
+              </div>
+              <p className="text-sm text-muted">{entry.period}</p>
+            </div>
+          </article>
+        ))}
+      </Section>
+
+      <Section title="Awards">
+        <ul className="space-y-2 text-sm leading-relaxed text-muted">
+          {resume.awards.map((award) => (
+            <li key={award} className="flex gap-3">
+              <span
+                aria-hidden="true"
+                className="mt-2 h-1.5 w-1.5 rounded-full bg-accent"
+              />
+              <span>{award}</span>
+            </li>
+          ))}
+        </ul>
+      </Section>
+
+      <Section title="Languages">
+        <p className="text-sm text-muted">{resume.languages}</p>
       </Section>
     </div>
   );
@@ -154,14 +164,20 @@ function Section({ title, children }: SectionProps) {
 interface TimelineItemProps {
   title: string;
   organization: string;
+  organizationUrl?: string;
   period: string;
-  items: string[];
+  location?: string;
+  blurb?: string;
+  items: ReactNode[];
 }
 
 function TimelineItem({
   title,
   organization,
+  organizationUrl,
   period,
+  location,
+  blurb,
   items,
 }: TimelineItemProps) {
   return (
@@ -169,15 +185,35 @@ function TimelineItem({
       <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h3 className="text-lg font-semibold text-foreground">{title}</h3>
-          <p className="text-sm text-muted">{organization}</p>
+          <p className="text-sm text-muted">
+            {organizationUrl ? (
+              <a
+                href={organizationUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-accent hover:text-accent-hover transition-colors"
+              >
+                {organization}
+              </a>
+            ) : (
+              organization
+            )}
+            {location ? <span> · {location}</span> : null}
+          </p>
         </div>
         <p className="text-sm text-muted">{period}</p>
       </div>
+      {blurb ? (
+        <p className="mt-3 text-sm leading-relaxed text-muted">{blurb}</p>
+      ) : null}
       {items.length > 0 ? (
         <ul className="mt-4 space-y-2 text-sm leading-relaxed text-muted">
-          {items.map((item) => (
-            <li key={item} className="flex gap-3">
-              <span aria-hidden="true" className="mt-2 h-1.5 w-1.5 rounded-full bg-accent" />
+          {items.map((item, idx) => (
+            <li key={idx} className="flex gap-3">
+              <span
+                aria-hidden="true"
+                className="mt-2 h-1.5 w-1.5 rounded-full bg-accent"
+              />
               <span>{item}</span>
             </li>
           ))}
@@ -189,11 +225,17 @@ function TimelineItem({
 
 interface ProjectItemProps {
   title: string;
-  description: string;
+  description: ReactNode;
   link: string;
+  showLinkUrl?: boolean;
 }
 
-function ProjectItem({ title, description, link }: ProjectItemProps) {
+function ProjectItem({
+  title,
+  description,
+  link,
+  showLinkUrl = false,
+}: ProjectItemProps) {
   return (
     <a
       href={link}
@@ -203,9 +245,11 @@ function ProjectItem({ title, description, link }: ProjectItemProps) {
     >
       <h3 className="text-lg font-semibold text-foreground">{title}</h3>
       <p className="mt-2 text-sm leading-relaxed text-muted">{description}</p>
-      <p className="mt-4 text-sm text-accent hover:text-accent-hover transition-colors">
-        {link}
-      </p>
+      {showLinkUrl ? (
+        <p className="mt-4 text-sm text-accent hover:text-accent-hover transition-colors">
+          {link}
+        </p>
+      ) : null}
     </a>
   );
 }

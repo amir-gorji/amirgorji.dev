@@ -8,7 +8,7 @@ describe("SocialLinks", () => {
 
     const github = screen.getByLabelText("GitHub");
     expect(github).toBeInTheDocument();
-    expect(github).toHaveAttribute("href", "https://github.com/amirgorji");
+    expect(github).toHaveAttribute("href", "https://github.com/amir-gorji");
     expect(github).toHaveAttribute("target", "_blank");
     expect(github).toHaveAttribute("rel", "noopener noreferrer");
 
