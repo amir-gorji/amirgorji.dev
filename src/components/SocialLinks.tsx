@@ -2,7 +2,7 @@ export function SocialLinks() {
   return (
     <div className="flex items-center gap-4">
       <a
-        href="https://github.com/amirgorji"
+        href="https://github.com/amir-gorji"
         target="_blank"
         rel="noopener noreferrer"
         className="text-muted hover:text-foreground transition-colors"
