@@ -3,6 +3,8 @@ import { SocialLinks } from '@/components/SocialLinks';
 import { getAllPosts } from '@/lib/posts';
 import Image from 'next/image';
 
+export const dynamic = 'force-static';
+
 export default async function Home() {
   const posts = await getAllPosts();
 
