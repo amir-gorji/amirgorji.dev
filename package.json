@@ -9,7 +9,7 @@
     "build:worker": "opennextjs-cloudflare build",
     "preview": "opennextjs-cloudflare preview",
     "predeploy": "npm run clean && npx tsc --noEmit && npm run lint && npm run test",
-    "deploy": "npm run predeploy && npm run build:worker && opennextjs-cloudflare deploy",
+    "deploy": "npm run predeploy && npm run build:worker && opennextjs-cloudflare populateCache remote && opennextjs-cloudflare deploy",
     "clean": "rm -rf .next .open-next out",
     "lint": "eslint",
     "test": "vitest run",
