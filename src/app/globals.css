@@ -9,6 +9,7 @@
   --muted: #6b7280;
   --accent: #2563eb;
   --accent-hover: #1d4ed8;
+  --code-bg: #f4f4f5;
 }
 
 .dark {
@@ -19,6 +20,7 @@
   --muted: #9ca3af;
   --accent: #60a5fa;
   --accent-hover: #93bbfd;
+  --code-bg: #18181b;
 }
 
 @theme inline {
@@ -66,9 +68,30 @@ pre > code[data-theme] {
   background-color: transparent;
 }
 
+figure[data-rehype-pretty-code-figure] {
+  position: relative;
+  margin: 1.5rem 0;
+}
+
 figure[data-rehype-pretty-code-figure] pre {
+  position: relative;
   border: 1px solid var(--card-border);
-  border-radius: 0.5rem;
+  border-radius: 0.75rem;
+  background-color: var(--code-bg) !important;
+  padding: 1.25rem 1.5rem;
+  overflow-x: auto;
+}
+
+/* Thin scrollbar */
+figure[data-rehype-pretty-code-figure] pre::-webkit-scrollbar {
+  height: 4px;
+}
+figure[data-rehype-pretty-code-figure] pre::-webkit-scrollbar-track {
+  background: transparent;
+}
+figure[data-rehype-pretty-code-figure] pre::-webkit-scrollbar-thumb {
+  background: var(--card-border);
+  border-radius: 2px;
 }
 
 /* Print styles for resume */

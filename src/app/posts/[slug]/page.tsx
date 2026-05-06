@@ -3,6 +3,7 @@ import { getAllPosts, getPostBySlug } from "@/lib/posts";
 import Link from "next/link";
 import type { Metadata } from "next";
 import rehypePrettyCode from "rehype-pretty-code";
+import CopyableCodeBlock from "@/components/CopyableCodeBlock";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -81,11 +82,13 @@ export default async function PostPage({ params }: Props) {
                       light: "github-light",
                       dark: "github-dark",
                     },
+                    keepBackground: false,
                   },
                 ],
               ],
             },
           }}
+          components={{ pre: CopyableCodeBlock }}
         />
       </div>
     </article>
