@@ -9,6 +9,12 @@ export interface PostMeta {
   title: string;
   date: string;
   excerpt: string;
+  readingMinutes: number;
+}
+
+function readingMinutes(content: string): number {
+  const words = content.trim().split(/\s+/).length;
+  return Math.max(1, Math.round(words / 200));
 }
 
 export async function getAllPosts(): Promise<PostMeta[]> {
@@ -22,19 +28,29 @@ export async function getAllPosts(): Promise<PostMeta[]> {
     const slug = filename.replace(/\.mdx$/, "");
     const filePath = path.join(postsDirectory, filename);
     const fileContents = fs.readFileSync(filePath, "utf8");
-    const { data } = matter(fileContents);
+    const { data, content } = matter(fileContents);
 
     return {
       slug,
       title: data.title || slug,
       date: data.date || "",
       excerpt: data.excerpt || "",
+      readingMinutes: readingMinutes(content),
     };
   });
 
   return posts.sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   );
+}
+
+export async function getPostNeighbors(slug: string) {
+  const posts = await getAllPosts();
+  const i = posts.findIndex((p) => p.slug === slug);
+  return {
+    newer: i > 0 ? posts[i - 1] : null,
+    older: i >= 0 && i < posts.length - 1 ? posts[i + 1] : null,
+  };
 }
 
 export async function getPostBySlug(slug: string) {

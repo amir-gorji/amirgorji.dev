@@ -24,13 +24,15 @@ describe("BlogCard", () => {
     title: "Test Post Title",
     date: "2026-01-15",
     excerpt: "This is a test excerpt for the blog post.",
+    readingMinutes: 4,
   };
 
-  it("renders title, date, and excerpt", () => {
+  it("renders title, date, reading time, and excerpt", () => {
     render(<BlogCard {...props} />);
 
     expect(screen.getByText("Test Post Title")).toBeInTheDocument();
     expect(screen.getByText("2026-01-15")).toBeInTheDocument();
+    expect(screen.getByText("4 min read")).toBeInTheDocument();
     expect(
       screen.getByText("This is a test excerpt for the blog post.")
     ).toBeInTheDocument();
