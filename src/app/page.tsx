@@ -34,8 +34,8 @@ export default async function Home() {
         <Image
           src='/me.jpeg'
           alt='Amir Gorji'
-          width={96}
-          height={96}
+          width={304}
+          height={304}
           className='w-38 h-38 rounded-full object-cover shrink-0'
           priority
         />
@@ -85,6 +85,7 @@ export default async function Home() {
               title={post.title}
               date={post.date}
               excerpt={post.excerpt}
+              readingMinutes={post.readingMinutes}
             />
           ))}
         </div>
