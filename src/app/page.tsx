@@ -57,7 +57,7 @@ export default async function Home() {
             </a>{' '}
             and{' '}
             <a
-              href='https://github.com/amir-gorji/mcpose'
+              href='https://mcpose.dev'
               target='_blank'
               rel='noopener noreferrer'
               className='accent hover:underline'
