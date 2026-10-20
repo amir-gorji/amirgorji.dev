@@ -1,7 +1,7 @@
 ---
 title: "Async state in TypeScript is a mess. Pattern matching fixes it."
 date: "2026-05-06"
-excerpt: "Boolean flags for async state are a footgun. Discriminated unions are the right model — but TypeScript gives you no ergonomic way to match on them. dismatch does."
+excerpt: "Boolean flags for async state are a footgun. Discriminated unions are the right model, but TypeScript gives you no ergonomic way to match on them. dismatch does."
 ---
 
 If you've written a fetch hook in TypeScript, you've probably written something like this:
@@ -14,7 +14,7 @@ const [error, setError] = useState<Error | null>(null);
 
 It works, but nothing prevents `isLoading` from being `true` while `data` is also set. Or `error` being non-null while the previous data is still hanging around. The state space is wider than it needs to be, and TypeScript can't help you because these three variables have no relationship to each other.
 
-The right model is a discriminated union — a single type that can only ever be in one state at a time.
+The right model is a discriminated union: a single type that can only ever be in one state at a time.
 
 ## Problem 1: Async state machines
 
@@ -44,7 +44,7 @@ function renderState(state: AsyncState<User[]>) {
 }
 ```
 
-This is fine for one component. But when you have a dozen components each switching on the same union, there's nothing stopping you from forgetting a case. TypeScript will warn you about unhandled `switch` cases only if you have `noImplicitReturns` on and a return type annotation — a lot of conditions to get right.
+This is fine for one component. But when you have a dozen components each switching on the same union, there's nothing stopping you from forgetting a case. TypeScript will warn you about unhandled `switch` cases only if you have `noImplicitReturns` on and a return type annotation, which is a lot of conditions to get right.
 
 dismatch ships a pre-built `RemoteData` union for exactly this shape, with `match` enforcing exhaustiveness as a *type*:
 
@@ -57,7 +57,7 @@ const state = RemoteData.loading();         // { type: 'loading' }
 const ok    = RemoteData.ok(users);         // { type: 'ok', data: users }
 const prev  = RemoteData.refreshing(users); // keeps previous data visible
 
-// Exhaustive match — compile error if you forget a variant
+// Exhaustive match: compile error if you forget a variant
 const view = (state: RD<User[]>) =>
   match(state)({
     idle:       () => "Click to load",
@@ -68,7 +68,7 @@ const view = (state: RD<User[]>) =>
   });
 ```
 
-If you later add a `stale` variant to your union and forget to update `view`, TypeScript tells you at the call site — not at runtime, not in a test, right in your editor.
+If you later add a `stale` variant to your union and forget to update `view`, TypeScript tells you at the call site. Not at runtime, not in a test, right in your editor.
 
 You can also roll your own with `createUnion` if you want a different shape:
 
@@ -117,14 +117,14 @@ const Result = createUnion({
   error: (error: ApiError) => ({ error }),
 });
 
-// Works with async handlers too — no Promise<A> | Promise<B> footgun
+// Works with async handlers too, no Promise<A> | Promise<B> footgun
 const user = await matchAsync(result)({
   ok:    async ({ data })  => enrichUser(data),      // async handler
   error:       ({ error }) => fallbackUser(error),   // sync is fine too
 });
 ```
 
-Without `matchAsync`, mixing sync and async handlers on the same union produces `Promise<User> | EnrichedUser` — a union you then have to unwrap again. `matchAsync` always returns `Promise<R>`, collapsing that mess.
+Without `matchAsync`, mixing sync and async handlers on the same union produces `Promise<User> | EnrichedUser`, a union you then have to unwrap again. `matchAsync` always returns `Promise<R>`, collapsing that mess.
 
 ## Problem 3: Sequential async with branching
 
@@ -135,7 +135,7 @@ The real pain shows up when you have a chain of async calls where each step depe
 async function getUserOrders(userId: string): Promise<string> {
   const userResult = await fetchUser(userId);
 
-  // Vanilla TypeScript — deeply nested, no exhaustiveness guarantee
+  // Vanilla TypeScript: deeply nested, no exhaustiveness guarantee
   if (userResult.type === "ok") {
     const ordersResult = await fetchOrders(userResult.data.id);
     if (ordersResult.type === "ok") {
@@ -173,6 +173,6 @@ If `Result` gains a `not_found` variant, both `matchAsync` and `match` calls abo
 
 ---
 
-Discriminated unions are the correct model for async state. TypeScript can express them; it just can't enforce exhaustive handling ergonomically. dismatch closes that gap — not by adding runtime magic, but by making the type system do the work it was supposed to do.
+Discriminated unions are the correct model for async state. TypeScript can express them; it just can't enforce exhaustive handling ergonomically. dismatch closes that gap, not by adding runtime magic, but by making the type system do the work it was supposed to do.
 
 Full docs at [dismatch.dev](https://dismatch.dev).

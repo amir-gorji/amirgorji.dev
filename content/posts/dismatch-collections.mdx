@@ -4,7 +4,7 @@ date: "2026-05-07"
 excerpt: "Array.filter, Array.map, and Array.reduce are unaware of discriminated unions. They can't narrow types, can't enforce exhaustiveness, and can't partition cleanly. dismatch fixes all three."
 ---
 
-TypeScript's built-in array methods — `filter`, `map`, `reduce` — don't know about discriminated unions. They treat a `Shape[]` as just an array. When you mix union-aware logic with these methods, you get silent type widening, missing compile-time safety, and a lot of boilerplate. Here's where it breaks down, and how dismatch fixes it.
+TypeScript's built-in array methods (`filter`, `map`, `reduce`) don't know about discriminated unions. They treat a `Shape[]` as just an array. When you mix union-aware logic with these methods, you get silent type widening, missing compile-time safety, and a lot of boilerplate. Here's where it breaks down, and how dismatch fixes it.
 
 ## Problem 1: `filter` doesn't narrow
 
@@ -25,7 +25,7 @@ const circles = shapes.filter(s => s.type === "circle");
 //    ^? Shape[]
 ```
 
-TypeScript infers `Shape[]` — not `Circle[]`. The predicate is a plain boolean function, and TypeScript has no way to know that `true` means "this is specifically a `Circle`." You end up casting:
+TypeScript infers `Shape[]`, not `Circle[]`. The predicate is a plain boolean function, and TypeScript has no way to know that `true` means "this is specifically a `Circle`." You end up casting:
 
 ```typescript
 const circles = shapes.filter(s => s.type === "circle") as Circle[];
@@ -33,7 +33,7 @@ const circles = shapes.filter(s => s.type === "circle") as Circle[];
 
 That cast is a lie you have to maintain. If `Circle` changes, the cast won't warn you.
 
-The fix is a *type predicate* — a function typed as `(s: Shape) => s is Circle`. Writing one by hand for every variant in every union gets old fast. dismatch generates them:
+The fix is a *type predicate*: a function typed as `(s: Shape) => s is Circle`. Writing one by hand for every variant in every union gets old fast. dismatch generates them:
 
 ```typescript
 import { createUnion, type InferUnion } from "dismatch";
@@ -46,11 +46,11 @@ const Shape = createUnion({
 
 type Shape = InferUnion<typeof Shape>;
 
-// Narrowed — no cast needed
+// Narrowed, no cast needed
 const circles = shapes.filter(Shape.is("circle"));
 //    ^? Circle[]
 
-// Multi-variant narrowing — also works
+// Multi-variant narrowing also works
 const flat = shapes.filter(Shape.is(["rectangle", "triangle"]));
 //    ^? (Rectangle | Triangle)[]
 ```
@@ -76,18 +76,18 @@ Mapping a union array to a single output type is a common operation. The vanilla
 function getArea(shape: Shape): number {
   if (shape.type === "circle")    return Math.PI * shape.radius ** 2;
   if (shape.type === "rectangle") return shape.width * shape.height;
-  // forgot triangle — TypeScript is fine with this if the function returns number | undefined
+  // forgot triangle; TypeScript is fine with this if the function returns number | undefined
 }
 
 const areas = shapes.map(getArea);
 ```
 
-If `getArea` doesn't have an explicit return type, TypeScript happily infers `number | undefined`. If it does have a return type, you get a compile error — but only on the function itself, not at the callsite. And if you later add a `Triangle` variant to `Shape`, nothing tells you to update `getArea`.
+If `getArea` doesn't have an explicit return type, TypeScript happily infers `number | undefined`. If it does have a return type, you get a compile error, but only on the function itself, not at the callsite. And if you later add a `Triangle` variant to `Shape`, nothing tells you to update `getArea`.
 
 With dismatch, the match object *is* the handler. Exhaustiveness is encoded in its type:
 
 ```typescript
-// Define once — this is a reusable typed function, not a one-shot match
+// Define once: this is a reusable typed function, not a one-shot match
 const getArea = Shape.match({
   circle:    ({ radius })        => Math.PI * radius ** 2,
   rectangle: ({ width, height }) => width * height,
@@ -98,9 +98,9 @@ const areas = shapes.map(getArea);
 //    ^? number[]
 ```
 
-If you add a `hexagon` variant to `Shape` and forget to add it to `Shape.match({...})`, TypeScript errors at the `Shape.match` call — not silently at runtime. Every callsite that uses `getArea` is automatically protected.
+If you add a `hexagon` variant to `Shape` and forget to add it to `Shape.match({...})`, TypeScript errors at the `Shape.match` call, not silently at runtime. Every callsite that uses `getArea` is automatically protected.
 
-`Shape.match` returns a reusable function — define it once at module scope and pass it directly to `.map()`. No wrapper lambdas.
+`Shape.match` returns a reusable function: define it once at module scope and pass it directly to `.map()`. No wrapper lambdas.
 
 If you want a fallback for variants you don't care about, `matchWithDefault` handles that:
 
@@ -115,7 +115,7 @@ shapes.map(label); // string[]
 
 ## Problem 3: Partitioning by variant
 
-Splitting an array into typed sub-arrays by variant is surprisingly common — and surprisingly painful without the right tool.
+Splitting an array into typed sub-arrays by variant is surprisingly common, and surprisingly painful without the right tool.
 
 The manual approach with `reduce`:
 
@@ -138,7 +138,7 @@ const { circles, others } = shapes.reduce<{
 
 You need the cast because `push(shape)` inside an `if` block doesn't narrow the array type. The accumulator type has to be written out explicitly. And if you want to split into three buckets, the `reduce` grows proportionally.
 
-dismatch has `partition` — a single function that splits in one pass with narrowed types on both sides:
+dismatch has `partition`, a single function that splits in one pass with narrowed types on both sides:
 
 ```typescript
 import { partition } from "dismatch";
@@ -172,7 +172,7 @@ const stats = shapes.reduce(
   },
   { totalArea: 0 },
 );
-// Not exhaustive — adding a new variant won't cause a compile error here
+// Not exhaustive: adding a new variant won't cause a compile error here
 ```
 
 ```typescript
@@ -186,7 +186,7 @@ const stats = fold(shapes, { circles: 0, totalArea: 0 })({
 });
 ```
 
-`fold` is exhaustive — missing a variant is a type error. Single pass, no `switch`, no separate accumulator type annotation required.
+`fold` is exhaustive: missing a variant is a type error. Single pass, no `switch`, no separate accumulator type annotation required.
 
 When you only need a count, `count` is even simpler:
 
@@ -199,6 +199,6 @@ count(shapes, ["rectangle", "triangle"]);   // combined count
 
 ---
 
-TypeScript has everything it needs to make array operations on discriminated unions fully type-safe. It just doesn't wire them together into something usable. `filter` can't narrow, `map` can't enforce exhaustiveness, and `reduce` can't partition without casts. dismatch does all of it — with no runtime overhead and no extra type annotations.
+TypeScript has everything it needs to make array operations on discriminated unions fully type-safe. It just doesn't wire them together into something usable. `filter` can't narrow, `map` can't enforce exhaustiveness, and `reduce` can't partition without casts. dismatch does all of it, with no runtime overhead and no extra type annotations.
 
 Full docs at [dismatch.dev](https://dismatch.dev).
