@@ -47,25 +47,7 @@ export default async function Home() {
             Fullstack engineer with strong TypeScript opinions, shaping the
             React Native platform behind Danske Bank&apos;s business-banking
             app. Lately putting guardrails around MCP servers and AI coding
-            agents. Building{' '}
-            <a
-              href='https://dismatch.dev'
-              target='_blank'
-              rel='noopener noreferrer'
-              className='accent hover:underline'
-            >
-              dismatch.dev
-            </a>{' '}
-            and{' '}
-            <a
-              href='https://mcpose.dev'
-              target='_blank'
-              rel='noopener noreferrer'
-              className='accent hover:underline'
-            >
-              mcpose
-            </a>
-            .
+            agents. Some of that work is open source, the two icons on the right.
           </p>
           <div className='mt-4'>
             <SocialLinks />
