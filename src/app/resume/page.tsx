@@ -3,15 +3,15 @@ import type { ReactNode } from "react";
 import { resume } from "./data";
 
 export const metadata: Metadata = {
-  title: "Resume — Amir Gorji",
-  description: `${resume.header.title} — ${resume.header.location}. ${resume.experience.length} years of mobile and web platform engineering across fintech, e-commerce, and healthcare.`,
+  title: "Resume | Amir Gorji",
+  description: `Senior Software Engineer, ${resume.header.location}. 7+ years of mobile and full-stack TypeScript engineering across fintech, e-commerce, and healthcare.`,
 };
 
 const personJsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
   name: resume.header.name,
-  jobTitle: resume.header.title,
+  jobTitle: "Senior Software Engineer",
   url: "https://amirgorji.dev",
   email: `mailto:${resume.header.email}`,
   sameAs: [resume.header.github, resume.header.linkedin],
@@ -63,6 +63,10 @@ export default function ResumePage() {
         <p className="text-muted leading-relaxed">{resume.summary}</p>
       </Section>
 
+      <Section title="Highlights">
+        <BulletList items={resume.highlights} />
+      </Section>
+
       <Section title="Experience">
         {resume.experience.map((entry) => (
           <TimelineItem
@@ -80,6 +84,17 @@ export default function ResumePage() {
 
       <Section title="Open Source">
         {resume.openSource.map((entry) => (
+          <ProjectItem
+            key={entry.name}
+            title={entry.name}
+            description={entry.description}
+            link={entry.url}
+          />
+        ))}
+      </Section>
+
+      <Section title="Speaking">
+        {resume.speaking.map((entry) => (
           <ProjectItem
             key={entry.name}
             title={entry.name}
@@ -124,24 +139,34 @@ export default function ResumePage() {
         ))}
       </Section>
 
+      <Section title="Certifications">
+        <BulletList items={resume.certifications} />
+      </Section>
+
       <Section title="Awards">
-        <ul className="space-y-2 text-sm leading-relaxed text-muted">
-          {resume.awards.map((award) => (
-            <li key={award} className="flex gap-3">
-              <span
-                aria-hidden="true"
-                className="mt-2 h-1.5 w-1.5 rounded-full bg-accent"
-              />
-              <span>{award}</span>
-            </li>
-          ))}
-        </ul>
+        <BulletList items={resume.awards} />
       </Section>
 
       <Section title="Languages">
         <p className="text-sm text-muted">{resume.languages}</p>
       </Section>
     </div>
+  );
+}
+
+function BulletList({ items }: { items: ReactNode[] }) {
+  return (
+    <ul className="space-y-2 text-sm leading-relaxed text-muted">
+      {items.map((item, idx) => (
+        <li key={idx} className="flex gap-3">
+          <span
+            aria-hidden="true"
+            className="mt-2 h-1.5 w-1.5 rounded-full bg-accent"
+          />
+          <span>{item}</span>
+        </li>
+      ))}
+    </ul>
   );
 }
 
@@ -236,11 +261,12 @@ function ProjectItem({
   link,
   showLinkUrl = false,
 }: ProjectItemProps) {
+  const external = link.startsWith("http");
   return (
     <a
       href={link}
-      target="_blank"
-      rel="noopener noreferrer"
+      target={external ? "_blank" : undefined}
+      rel={external ? "noopener noreferrer" : undefined}
       className="block rounded-2xl border border-card-border bg-card-bg p-5 transition-colors hover:border-accent"
     >
       <h3 className="text-lg font-semibold text-foreground">{title}</h3>

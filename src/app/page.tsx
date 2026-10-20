@@ -44,9 +44,10 @@ export default async function Home() {
             Hi, I&apos;m Amir Gorji
           </h1>
           <p className='mt-3 text-lg text-muted max-w-lg'>
-            Frontend & mobile-leaning fullstack engineer with strong TypeScript
-            opinions. Lately exploring algorithmic approaches to fix LLM blind
-            spots. Building{' '}
+            Fullstack engineer with strong TypeScript opinions, shaping the
+            React Native platform behind Danske Bank&apos;s business-banking
+            app. Lately putting guardrails around MCP servers and AI coding
+            agents. Building{' '}
             <a
               href='https://dismatch.dev'
               target='_blank'

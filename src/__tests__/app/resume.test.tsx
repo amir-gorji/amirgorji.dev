@@ -12,10 +12,13 @@ describe("ResumePage", () => {
 
     const expectedSections = [
       "Summary",
+      "Highlights",
       "Experience",
       "Open Source",
+      "Speaking",
       "Skills",
       "Education",
+      "Certifications",
       "Awards",
       "Languages",
     ];
