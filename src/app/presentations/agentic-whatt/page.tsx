@@ -4,7 +4,6 @@ import { presentation } from "./data";
 export const metadata: Metadata = {
   title: `${presentation.title} | Amir Gorji`,
   description: `Slides and resources from the talk "${presentation.title}" by Amir Gorji.`,
-  robots: { index: false, follow: true },
 };
 
 export default function AgenticWhattPage() {

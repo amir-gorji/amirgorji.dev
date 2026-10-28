@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import Link from "next/link";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { SiteNav } from "@/components/SiteNav";
 import "./globals.css";
 
 const inter = Inter({
@@ -43,15 +43,7 @@ export default function RootLayout({
             >
               Amir Gorji
             </Link>
-            <nav className="flex items-center gap-6">
-              <Link
-                href="/resume"
-                className="text-sm text-muted hover:text-foreground transition-colors"
-              >
-                Resume
-              </Link>
-              <ThemeToggle />
-            </nav>
+            <SiteNav />
           </header>
           <main className="flex-1 w-full max-w-3xl mx-auto px-6 pb-16">
             {children}

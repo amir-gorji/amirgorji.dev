@@ -8,7 +8,8 @@ export interface Material {
 
 export const presentation = {
   title: "Agentic WHATT",
-  tagline: "Thanks for attending. Everything from the talk is collected here.",
+  tagline:
+    "Slides and materials from my CopenhagenJS talk, 15 October 2026.",
   linkedinUrl: "https://linkedin.com/in/amirgorji",
   githubUrl: "https://github.com/amir-gorji",
   materials: [
