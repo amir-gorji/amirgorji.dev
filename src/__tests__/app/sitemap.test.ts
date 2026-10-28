@@ -16,13 +16,15 @@ describe("sitemap", () => {
     const urls = result.map((entry) => entry.url);
     expect(urls).toContain("https://amirgorji.dev");
     expect(urls).toContain("https://amirgorji.dev/resume");
+    expect(urls).toContain("https://amirgorji.dev/presentations");
+    expect(urls).toContain("https://amirgorji.dev/presentations/agentic-whatt");
     expect(urls).toContain("https://amirgorji.dev/posts/hello-world");
     expect(urls).toContain("https://amirgorji.dev/posts/second-post");
   });
 
   it("returns correct number of entries", async () => {
     const result = await sitemap();
-    // 2 static pages + 2 blog posts
-    expect(result).toHaveLength(4);
+    // 4 static pages + 2 blog posts
+    expect(result).toHaveLength(6);
   });
 });
